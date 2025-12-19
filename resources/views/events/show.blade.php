@@ -3,7 +3,6 @@
 
 @section('content')
 <div class="container mx-auto py-8 px-4 max-w-4xl">
-    <!-- Back Button -->
     <div class="mb-6">
         <a href="{{ route('home') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -13,9 +12,7 @@
         </a>
     </div>
 
-    <!-- Event Detail Card -->
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <!-- Event Header -->
         <div class="bg-blue-950 text-white p-6">
             <h1 class="text-3xl font-bold mb-2">{{ $event->name }}</h1>
             <div class="flex flex-wrap gap-4 text-sm opacity-90">
@@ -25,7 +22,6 @@
             </div>
         </div>
 
-        <!-- Event Details -->
         <div class="p-6">
     
             {{-- Grid Layout: Kiri Poster, Kanan Info --}}
@@ -35,7 +31,8 @@
                 <div class="lg:col-span-1">
                     <div class="rounded-lg overflow-hidden shadow-md border border-gray-200">
                         @if($event->image)
-                            <img src="{{ asset('storage/' . $event->image) }}" 
+                            {{-- PERBAIKAN DI SINI: Menggunakan Storage::url() untuk S3 --}}
+                            <img src="{{ Storage::url($event->image) }}" 
                                 alt="{{ $event->name }}"  
                                 class="w-full h-auto object-cover">
                         @else
@@ -82,7 +79,6 @@
                                         <span class="text-sm">Pendaftaran Peserta: <span class="font-medium text-gray-600">Belum Dibuka</span></span>
                                     </div>
                                 @elseif ($registration_phase === 'participant_open')
-                                    {{-- ... copy paste logika lama ... --}}
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
                                         <span class="text-sm">Pendaftaran Panitia: <span class="font-medium text-gray-600">Ditutup</span></span>
@@ -109,29 +105,27 @@
                     </div>
 
                     <div class="border-t pt-6">
-                        {{-- Logika tombol register tetap sama, letakkan di sini --}}
                         @auth
-                        {{-- ... copy paste logika tombol auth lama ... --}}
-                        @if ($registration_phase === 'volunteer_open')
+                            @if ($registration_phase === 'volunteer_open')
                                 <div class="flex flex-col sm:flex-row gap-4">
                                     <a href="{{ route('volunteer.register', $event->id) }}" class="flex-1 bg-blue-950 text-white text-center px-6 py-3 rounded-lg hover:bg-blue-800 transition font-medium">Join as panitia</a>
-                                    {{-- tombol disabled peserta --}}
+                                    <button disabled class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">Join as peserta (Belum Dibuka)</button>
                                 </div>
-                        @elseif ($registration_phase === 'participant_open')
-                                {{-- logika peserta open --}}
+                            @elseif ($registration_phase === 'participant_open')
                                 <div class="flex flex-col sm:flex-row gap-4">
-                                    {{-- tombol disabled panitia --}}
+                                    <button disabled class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">Join as panitia (Tutup)</button>
                                     <a href="{{ route('events.participant-form', $event->id) }}" class="flex-1 bg-green-600 text-white text-center px-6 py-3 rounded-lg hover:bg-green-500 transition font-medium">Join as peserta</a>
                                 </div>
+                            @else
+                                <div class="text-center bg-gray-100 p-4 rounded-lg text-gray-600">
+                                    Pendaftaran untuk event ini sudah ditutup.
+                                </div>
+                            @endif
                         @else
-                                {{-- logika tutup --}}
-                        @endif
-                        @else
-                        {{-- logika guest --}}
-                        <div class="text-center">
+                            <div class="text-center">
                                 <p class="text-gray-600 mb-4">Silakan login untuk mendaftar ke event ini</p>
                                 <a href="{{ route('login') }}" class="inline-block bg-blue-950 text-white px-6 py-2 rounded-lg hover:bg-blue-800">Login</a>
-                        </div>
+                            </div>
                         @endauth
                     </div>
 
@@ -139,7 +133,6 @@
             </div> {{-- End Grid Layout --}}
         </div>
 
-    <!-- More Info Section (if needed) -->
     @if($event->additional_info ?? false)
         <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 class="font-semibold text-blue-900 mb-2">More Info</h3>

@@ -1,5 +1,4 @@
 <?php $__env->startSection('content'); ?>
-    <!-- Hero Section -->
     <div class="relative bg-cover bg-center text-white overflow-hidden" style="background-image: url('/images/banner.png')">
         <div class="absolute inset-0 bg-black bg-opacity-40"></div>
         <div class="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:py-24">
@@ -31,7 +30,6 @@
         </div>
     </div>
 
-    <!-- Events Section -->
     <div class="max-w-6xl mx-auto px-4 py-12 mb-16">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800">Events</h2>
@@ -85,7 +83,7 @@
                     <div class="relative h-48 bg-gray-200">
                         <?php if($event->image): ?> 
                             
-                            <img src="<?php echo e(asset('storage/' . $event->image)); ?>" 
+                            <img src="<?php echo e(Storage::url($event->image)); ?>" 
                                 alt="<?php echo e($event->name); ?>" 
                                 class="w-full h-full object-cover">
                         <?php else: ?>
@@ -98,9 +96,9 @@
                         <?php endif; ?>
                         
                         
-                        <?php if($event->skkkCategoryName): ?>
+                        <?php if($event->skkk_category): ?>
                             <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-                                <?php echo e($event->skkkCategoryName); ?>
+                                <?php echo e($event->skkk_category); ?>
 
                             </div>
                         <?php endif; ?>
@@ -117,12 +115,10 @@
 
                             </p>
                             <p class="text-sm text-gray-600 mb-4">
-                                <?php if($event->registration_phase === 'volunteer_open'): ?>
-                                    <span class="text-blue-600 font-medium">Dicari: Panitia</span>
-                                <?php elseif($event->registration_phase === 'participant_open'): ?>
+                                <?php if($event->slot_peserta > 0): ?>
                                     <span class="text-green-600 font-medium">Dicari: Peserta</span>
                                 <?php else: ?>
-                                    <span class="text-gray-500">Pendaftaran ditutup</span>
+                                    <span class="text-blue-600 font-medium">Dicari: Panitia</span>
                                 <?php endif; ?>
                             </p>
                         </div>
@@ -143,8 +139,6 @@
                 </div>
             <?php endif; ?>
         </div>
-
-
 
         <?php if($events->isEmpty()): ?>
             <div class="text-center py-12">

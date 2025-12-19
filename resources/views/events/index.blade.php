@@ -2,7 +2,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Hero Section -->
     <div class="relative bg-cover bg-center text-white overflow-hidden" style="background-image: url('/images/banner.png')">
         <div class="absolute inset-0 bg-black bg-opacity-40"></div>
         <div class="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:py-24">
@@ -34,7 +33,6 @@
         </div>
     </div>
 
-    <!-- Events Section -->
     <div class="max-w-6xl mx-auto px-4 py-12 mb-16">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800">Events</h2>
@@ -84,11 +82,11 @@
             @forelse($events as $event)
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex flex-col">
                     
-                    {{-- BAGIAN BARU: FOTO POSTER --}}
+                    {{-- BAGIAN BARU: FOTO POSTER DARI S3 --}}
                     <div class="relative h-48 bg-gray-200">
                         @if($event->image) 
-                            {{-- Ganti 'image' dengan nama kolom di database kamu --}}
-                            <img src="{{ asset('storage/' . $event->image) }}" 
+                            {{-- PERBAIKAN DI SINI: Menggunakan Storage::url() --}}
+                            <img src="{{ Storage::url($event->image) }}" 
                                 alt="{{ $event->name }}" 
                                 class="w-full h-full object-cover">
                         @else
@@ -100,10 +98,10 @@
                             </div>
                         @endif
                         
-                        {{-- Badge Kategori (Opsional: dipindah ke atas gambar) --}}
-                        @if($event->skkkCategoryName)
+                        {{-- Badge Kategori --}}
+                        @if($event->skkk_category)
                             <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-                                {{ $event->skkkCategoryName }}
+                                {{ $event->skkk_category }}
                             </div>
                         @endif
                     </div>
@@ -118,12 +116,10 @@
                                 {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
                             </p>
                             <p class="text-sm text-gray-600 mb-4">
-                                @if($event->registration_phase === 'volunteer_open')
-                                    <span class="text-blue-600 font-medium">Dicari: Panitia</span>
-                                @elseif($event->registration_phase === 'participant_open')
+                                @if($event->slot_peserta > 0)
                                     <span class="text-green-600 font-medium">Dicari: Peserta</span>
                                 @else
-                                    <span class="text-gray-500">Pendaftaran ditutup</span>
+                                    <span class="text-blue-600 font-medium">Dicari: Panitia</span>
                                 @endif
                             </p>
                         </div>
@@ -144,8 +140,6 @@
                 </div>
             @endforelse
         </div>
-
-
 
         @if($events->isEmpty())
             <div class="text-center py-12">
