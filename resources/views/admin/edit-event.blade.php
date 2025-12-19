@@ -50,12 +50,14 @@
                         Poster Event
                     </label>
                     
-                    {{-- Preview Gambar Saat Ini --}}
+                    {{-- [MODIFIKASI] Preview Gambar dari S3 --}}
                     @if($event->image)
                         <div class="mb-3">
-                            <p class="text-xs text-gray-500 mb-1">Poster saat ini:</p>
-                            <img src="{{ asset('storage/' . $event->image) }}" 
-                                 class="w-32 h-auto rounded-lg shadow-sm border border-gray-200" alt="Current Poster">
+                            <p class="text-xs text-gray-500 mb-1">Poster saat ini (S3):</p>
+                            {{-- Menggunakan Storage facade untuk generate URL S3 --}}
+                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('s3')->url($event->image) }}" 
+                                 class="w-32 h-auto rounded-lg shadow-sm border border-gray-200" 
+                                 alt="Current Poster">
                         </div>
                     @endif
 
@@ -211,11 +213,11 @@
                 </li>
                 <li class="flex items-start">
                     <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                    Jika slot peserta dikurangi di bawah jumlah pendaftar saat ini, sistem tidak akan menghapus pendaftar lama secara otomatis.
+                    Pastikan koneksi internet stabil karena poster akan diambil dari cloud storage.
                 </li>
                 <li class="flex items-start">
                     <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                    Pastikan menghubungi admin lain jika Anda mengubah penanggung jawab acara.
+                    Jika slot peserta dikurangi di bawah jumlah pendaftar saat ini, sistem tidak akan menghapus pendaftar lama secara otomatis.
                 </li>
             </ul>
         </div>

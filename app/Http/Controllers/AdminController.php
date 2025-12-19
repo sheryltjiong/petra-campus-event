@@ -59,7 +59,7 @@ class AdminController extends Controller
             'date' => 'required|date',
             'time' => 'required|string',
             'location' => 'required|string|max:255',
-            'image' => 'required|mimes:png,jpg,jpeg|max:10240',
+            'image' => 'required|mimes:png,jpg,jpeg|max:10240', // Max 10MB
             'description' => 'required|string',
             'slot_peserta' => 'required|integer|min:1',
             'skkk_points' => 'required|numeric|min:0',
@@ -69,14 +69,17 @@ class AdminController extends Controller
             'admin_ids.*' => 'exists:users,id',
         ]);
 
-        $imagePath = $request->file('image')->store('events', 'public');
+        // [PERUBAHAN ADA DI SINI]
+        // Mengubah disk 'public' menjadi 's3'
+        // Laravel akan otomatis mengupload file ke bucket S3 yang dikonfigurasi
+        $imagePath = $request->file('image')->store('events', 's3');
 
         $event = Event::create([
             'name' => $data['name'],
             'date' => $data['date'],
             'time' => $data['time'],
             'location' => $data['location'],
-            'image' => $imagePath,
+            'image' => $imagePath, // Path yang disimpan sekarang adalah path relative di S3
             'description' => $data['description'],
             'slot_peserta' => $data['slot_peserta'],
             'skkk_points' => $data['skkk_points'] ?? 0,
@@ -86,9 +89,6 @@ class AdminController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        // Assign admins
-        // $adminData = collect($data['admin_ids'])->mapWithKeys(function ($id) {
-        // });
         $event->users()->attach($data['admin_ids']);
 
         return redirect()->route('admin.dashboard')->with('success', 'Event created and admin(s) assigned successfully.');
