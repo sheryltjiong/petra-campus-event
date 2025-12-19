@@ -36,7 +36,7 @@
                     <div class="rounded-lg overflow-hidden shadow-md border border-gray-200">
                         @if($event->image)
                             <img src="{{ asset('storage/' . $event->image) }}" 
-                                alt="{{ $event->name }}" 
+                                alt="{{ $event->name }}"  
                                 class="w-full h-auto object-cover">
                         @else
                             <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-400">

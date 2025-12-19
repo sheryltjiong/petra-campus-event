@@ -59,6 +59,7 @@ class AdminController extends Controller
             'date' => 'required|date',
             'time' => 'required|string',
             'location' => 'required|string|max:255',
+            'image' => 'required|mimes:png,jpg,jpeg|max:10240',
             'description' => 'required|string',
             'slot_peserta' => 'required|integer|min:1',
             'skkk_points' => 'required|numeric|min:0',
@@ -68,11 +69,14 @@ class AdminController extends Controller
             'admin_ids.*' => 'exists:users,id',
         ]);
 
+        $imagePath = $request->file('image')->store('events', 'public');
+
         $event = Event::create([
             'name' => $data['name'],
             'date' => $data['date'],
             'time' => $data['time'],
             'location' => $data['location'],
+            'image' => $imagePath,
             'description' => $data['description'],
             'slot_peserta' => $data['slot_peserta'],
             'skkk_points' => $data['skkk_points'] ?? 0,

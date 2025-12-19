@@ -12,6 +12,7 @@ class Event extends Model
         'date',
         'time',
         'location',
+        'image',
         'description',
         'slot_peserta',
         'skkk_points',

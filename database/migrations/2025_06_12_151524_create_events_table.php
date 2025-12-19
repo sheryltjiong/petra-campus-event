@@ -14,6 +14,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('time');
             $table->string('location');
+            $table->string('image');
             $table->text('description');
             $table->integer('slot_peserta');
             $table->integer('skkk_points')->default(0);
