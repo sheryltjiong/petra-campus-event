@@ -11,59 +11,47 @@ class EventSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil admin pertama (PASTI ADA dari UsersTableSeeder)
+        // 1. Ambil Admin untuk kolom created_by
         $admin = User::whereIn('role', ['admin', 'super_admin'])->first();
 
         if (!$admin) {
-            throw new \Exception('Admin user not found. Please seed users first.');
+            // Fallback: Jika admin belum ada, buat user dummy agar seeder tidak error
+            $admin = User::factory()->create(['role' => 'admin']);
         }
 
-        Event::updateOrCreate(
-            ['name' => 'Petra Tech Talk 2025'],
+        // 2. Buat Event dengan Gambar dari S3
+        $events = [
             [
-                'description' => 'Seminar Petra Tech Talk',
-                'image' => 'events/poster-default.jpg',
+                'name' => 'Petra Tech Talk 2025',
+                'description' => 'Seminar teknologi masa depan.',
+                // PERHATIKAN INI: Cukup nama folder dan nama file di S3
+                'image' => 'events/poster-default.jpg', 
                 'date' => Carbon::now()->addDays(10)->toDateString(),
                 'time' => '09:00',
                 'location' => 'Auditorium Q',
                 'slot_peserta' => 200,
-                'skkk_points' => 5,
-                'skkk_category' => 'A',
+                'skkk_points' => 10,
+                'skkk_category' => 'Penalaran',
                 'skkk_points_volunteer' => 5,
                 'created_by' => $admin->id,
-            ]
-        );
-
-        Event::updateOrCreate(
-            ['name' => 'Petra Charity Day'],
+            ],
             [
-                'description' => 'Kegiatan sosial untuk masyarakat sekitar.',
-                'image' => 'events/poster-default.jpg',
+                'name' => 'Petra Charity Day',
+                'description' => 'Berbagi kasih dengan sesama.',
+                'image' => 'events/poster-default.jpg', // Pakai gambar yang sama (karena ada di S3)
                 'date' => Carbon::now()->addDays(20)->toDateString(),
                 'time' => '08:00',
-                'location' => 'Lapangan Tengah PCU',
-                'slot_peserta' => 150,
+                'location' => 'Lapangan Hijau',
+                'slot_peserta' => 100,
                 'skkk_points' => 15,
-                'skkk_category' => 'D',
-                'skkk_points_volunteer' => 7,
-                'created_by' => $admin->id,
-            ]
-        );
-
-        Event::updateOrCreate(
-            ['name' => 'Petra Leadership Camp'],
-            [
-                'description' => 'Pelatihan kepemimpinan mahasiswa.',
-                'image' => 'events/poster-default.jpg',
-                'date' => Carbon::now()->addDays(30)->toDateString(),
-                'time' => '07:30',
-                'location' => 'Villa Trawas',
-                'slot_peserta' => 50,
-                'skkk_points' => 20,
-                'skkk_category' => 'C',
+                'skkk_category' => 'Pengabdian Masyarakat',
                 'skkk_points_volunteer' => 10,
                 'created_by' => $admin->id,
-            ]
-        );
+            ],
+        ];
+
+        foreach ($events as $event) {
+            Event::updateOrCreate(['name' => $event['name']], $event);
+        }
     }
 }
