@@ -63,8 +63,8 @@ class AdminController extends Controller
             'description' => 'required|string',
             'slot_peserta' => 'required|integer|min:1',
             'skkk_points' => 'required|numeric|min:0',
-            'skkk_category' => 'nullable|string|max:1',
-            'skkk_points_volunteer' => 'required|numeric|min:0',
+            'skkk_category' => 'nullable|string|max:255',
+            'skkk_points_volunteer' => 'numeric|min:0',
             'admin_ids' => 'required|array',
             'admin_ids.*' => 'exists:users,id',
         ]);

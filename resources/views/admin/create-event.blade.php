@@ -9,7 +9,6 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-8">
-            {{-- [MODIFIKASI 1] Tambahkan enctype="multipart/form-data" --}}
             <form method="POST" action="{{ route('admin.create-event') }}" class="space-y-6" enctype="multipart/form-data">
                 @csrf
 
@@ -37,7 +36,6 @@
                     @enderror
                 </div>
 
-                {{-- [MODIFIKASI 2] Bagian Upload Poster --}}
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
                         Poster Event <span class="text-red-500">*</span>
@@ -55,7 +53,6 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                {{-- [AKHIR MODIFIKASI] --}}
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -122,6 +119,7 @@
                         @enderror
                     </div>
 
+                    {{-- [MODIFIKASI] Value opsi sekarang sesuai nama (Bukan A, B, C, D) --}}
                     <div>
                         <label for="skkk_category" class="block text-sm font-medium text-gray-700 mb-2">
                             Kategori SKKK
@@ -129,10 +127,10 @@
                         <select name="skkk_category" id="skkk_category"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="" selected>Pilih Kategori (optional)</option>
-                            <option value="A" {{ old('skkk_category') == 'Penalaran' ? 'selected' : '' }}>Penalaran</option>
-                            <option value="B" {{ old('skkk_category') == 'Bakat Minat' ? 'selected' : '' }}>Bakat Minat</option>
-                            <option value="C" {{ old('skkk_category') == 'Organisasi & Kepemimpinan' ? 'selected' : '' }}>Organisasi & Kepemimpinan</option>
-                            <option value="D" {{ old('skkk_category') == 'Pengabdian Masyarakat' ? 'selected' : '' }}>Pengabdian Masyarakat</option>
+                            <option value="Penalaran" {{ old('skkk_category') == 'Penalaran' ? 'selected' : '' }}>Penalaran</option>
+                            <option value="Bakat Minat" {{ old('skkk_category') == 'Bakat Minat' ? 'selected' : '' }}>Bakat Minat</option>
+                            <option value="Organisasi & Kepemimpinan" {{ old('skkk_category') == 'Organisasi & Kepemimpinan' ? 'selected' : '' }}>Organisasi & Kepemimpinan</option>
+                            <option value="Pengabdian Masyarakat" {{ old('skkk_category') == 'Pengabdian Masyarakat' ? 'selected' : '' }}>Pengabdian Masyarakat</option>
                         </select>
                         @error('skkk_category')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -193,7 +191,6 @@
                     <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Event baru akan dibuat dengan status "Pendaftaran Volunteer Terbuka"
                 </li>
-                {{-- Tambahan panduan gambar --}}
                 <li class="flex items-start">
                     <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Gunakan poster dengan rasio 1:1 atau 4:3 agar tampilan rapi
