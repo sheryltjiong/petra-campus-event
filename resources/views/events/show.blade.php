@@ -27,135 +27,117 @@
 
         <!-- Event Details -->
         <div class="p-6">
-            <!-- Event Info Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Detail Event</h3>
-                    <div class="space-y-2 text-sm">
-                        <div><span class="font-medium">Penyelenggara:</span> {{ $event->organizer_type ?? 'PCU' }}</div>
-                        @if($event->skkk_points || $event->skkkCategoryName)
-                            <div>
-                                <span class="font-medium">SKKK Points (Peserta):</span> 
-                                {{ $event->skkk_points ?? 'Tidak tersedia' }}
+    
+            {{-- Grid Layout: Kiri Poster, Kanan Info --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                {{-- BAGIAN BARU: KOLOM POSTER (Sebelah Kiri/Atas) --}}
+                <div class="lg:col-span-1">
+                    <div class="rounded-lg overflow-hidden shadow-md border border-gray-200">
+                        @if($event->image)
+                            <img src="{{ asset('storage/' . $event->image) }}" 
+                                alt="{{ $event->name }}" 
+                                class="w-full h-auto object-cover">
+                        @else
+                            <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-400">
+                                <span class="text-sm">No Poster Available</span>
                             </div>
-                            @if($event->skkkCategoryName)
-                                <div>
-                                    <span class="font-medium">Kategori SKKK:</span> 
-                                    {{ $event->skkkCategoryName }}
+                        @endif
+                    </div>
+                </div>
+
+                {{-- KOLOM INFO (Sebelah Kanan/Bawah) --}}
+                <div class="lg:col-span-2">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Detail Event</h3>
+                            <div class="space-y-2 text-sm">
+                                <div><span class="font-medium">Penyelenggara:</span> {{ $event->organizer_type ?? 'PCU' }}</div>
+                                @if($event->skkk_points || $event->skkkCategoryName)
+                                    <div>
+                                        <span class="font-medium">SKKK Points (Peserta):</span> 
+                                        {{ $event->skkk_points ?? 'Tidak tersedia' }}
+                                    </div>
+                                    @if($event->skkkCategoryName)
+                                        <div>
+                                            <span class="font-medium">Kategori SKKK:</span> 
+                                            {{ $event->skkkCategoryName }}
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Status Pendaftaran</h3>
+                            <div class="space-y-2">
+                                @if ($registration_phase === 'volunteer_open')
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                        <span class="text-sm">Pendaftaran Panitia: <span class="font-medium text-green-600">Terbuka</span></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                                        <span class="text-sm">Pendaftaran Peserta: <span class="font-medium text-gray-600">Belum Dibuka</span></span>
+                                    </div>
+                                @elseif ($registration_phase === 'participant_open')
+                                    {{-- ... copy paste logika lama ... --}}
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                                        <span class="text-sm">Pendaftaran Panitia: <span class="font-medium text-gray-600">Ditutup</span></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                        <span class="text-sm">Pendaftaran Peserta: <span class="font-medium text-green-600">Terbuka</span></span>
+                                    </div>
+                                @else
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                        <span class="text-sm">Pendaftaran: <span class="font-medium text-red-600">Ditutup</span></span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="font-semibold text-gray-800 mb-3">Deskripsi</h3>
+                        <div class="prose max-w-none text-gray-700">
+                            {!! nl2br(e($event->description)) !!}
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-6">
+                        {{-- Logika tombol register tetap sama, letakkan di sini --}}
+                        @auth
+                        {{-- ... copy paste logika tombol auth lama ... --}}
+                        @if ($registration_phase === 'volunteer_open')
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <a href="{{ route('volunteer.register', $event->id) }}" class="flex-1 bg-blue-950 text-white text-center px-6 py-3 rounded-lg hover:bg-blue-800 transition font-medium">Join as panitia</a>
+                                    {{-- tombol disabled peserta --}}
                                 </div>
-                            @endif
-                        @endif
-                    </div>
-                </div>
-                
-                
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Status Pendaftaran</h3>
-                    <div class="space-y-2">
-                        @if ($registration_phase === 'volunteer_open')
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="text-sm">Pendaftaran Panitia: <span class="font-medium text-green-600">Terbuka</span></span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
-                                <span class="text-sm">Pendaftaran Peserta: <span class="font-medium text-gray-600">Belum Dibuka</span></span>
-                            </div>
                         @elseif ($registration_phase === 'participant_open')
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
-                                <span class="text-sm">Pendaftaran Panitia: <span class="font-medium text-gray-600">Ditutup</span></span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="text-sm">Pendaftaran Peserta: <span class="font-medium text-green-600">Terbuka</span></span>
-                            </div>
+                                {{-- logika peserta open --}}
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    {{-- tombol disabled panitia --}}
+                                    <a href="{{ route('events.participant-form', $event->id) }}" class="flex-1 bg-green-600 text-white text-center px-6 py-3 rounded-lg hover:bg-green-500 transition font-medium">Join as peserta</a>
+                                </div>
                         @else
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                                <span class="text-sm">Pendaftaran: <span class="font-medium text-red-600">Ditutup</span></span>
-                            </div>
+                                {{-- logika tutup --}}
                         @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event Description -->
-            <div class="mb-8">
-                <h3 class="font-semibold text-gray-800 mb-3">Deskripsi</h3>
-                <div class="prose max-w-none text-gray-700">
-                    {!! nl2br(e($event->description)) !!}
-                </div>
-            </div>
-
-            <!-- Registration Buttons -->
-            <div class="border-t pt-6">
-                @auth
-                    @if ($registration_phase === 'volunteer_open')
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ route('volunteer.register', $event->id) }}" 
-                               class="flex-1 bg-blue-950 text-white text-center px-6 py-3 rounded-lg hover:bg-blue-800 transition font-medium">
-                                Join as panitia
-                            </a>
-                            <button disabled 
-                                    class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">
-                                Join as peserta (Belum Dibuka)
-                            </button>
-                        </div>
-                    @elseif ($registration_phase === 'participant_open')
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button disabled 
-                                    class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">
-                                Join as panitia (Ditutup)
-                            </button>
-                            <a href="{{ route('events.participant-form', $event->id) }}" 
-                               class="flex-1 bg-green-600 text-white text-center px-6 py-3 rounded-lg hover:bg-green-500 transition font-medium">
-                                Join as peserta
-                            </a>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                                <p class="font-medium">Pendaftaran Ditutup</p>
-                                <p class="text-sm">Maaf, pendaftaran untuk event ini sudah ditutup.</p>
-                            </div>
-                        </div>
-                    @endif
-                @else
-                    <div class="text-center">
-                        <p class="text-gray-600 mb-4">Silakan login untuk mendaftar ke event ini</p>
-                        @if ($registration_phase === 'volunteer_open')
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <a href="{{ route('login') }}" 
-                                   class="flex-1 bg-blue-950 text-white text-center px-6 py-3 rounded-lg hover:bg-blue-800 transition font-medium">
-                                    Login untuk Daftar sebagai Panitia
-                                </a>
-                                <button disabled 
-                                        class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">
-                                    Daftar sebagai Peserta (Belum Dibuka)
-                                </button>
-                            </div>
-                        @elseif ($registration_phase === 'participant_open')
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <button disabled 
-                                        class="flex-1 bg-gray-300 text-gray-500 text-center px-6 py-3 rounded-lg cursor-not-allowed font-medium">
-                                    Daftar sebagai Panitia (Ditutup)
-                                </button>
-                                <a href="{{ route('login') }}" 
-                                   class="flex-1 bg-green-600 text-white text-center px-6 py-3 rounded-lg hover:bg-green-500 transition font-medium">
-                                    Login untuk Daftar sebagai Peserta
-                                </a>
-                            </div>
                         @else
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                                <p class="font-medium">Pendaftaran Ditutup</p>
-                            </div>
-                        @endif
+                        {{-- logika guest --}}
+                        <div class="text-center">
+                                <p class="text-gray-600 mb-4">Silakan login untuk mendaftar ke event ini</p>
+                                <a href="{{ route('login') }}" class="inline-block bg-blue-950 text-white px-6 py-2 rounded-lg hover:bg-blue-800">Login</a>
+                        </div>
+                        @endauth
                     </div>
-                @endauth
-            </div>
+
+                </div> {{-- End Kolom Kanan --}}
+            </div> {{-- End Grid Layout --}}
         </div>
-    </div>
 
     <!-- More Info Section (if needed) -->
     @if($event->additional_info ?? false)

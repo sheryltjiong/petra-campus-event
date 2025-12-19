@@ -82,30 +82,53 @@
 
         <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @forelse($events as $event)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="p-6 flex-grow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg text-gray-800 leading-tight pr-2">{{ $event->name }}</h3>
-                             @if($event->skkkCategoryName)
-                                <div class="flex-shrink-0 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
-                                    {{ $event->skkkCategoryName }}
-                                </div>
-                            @endif
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex flex-col">
+                    
+                    {{-- BAGIAN BARU: FOTO POSTER --}}
+                    <div class="relative h-48 bg-gray-200">
+                        @if($event->image) 
+                            {{-- Ganti 'image' dengan nama kolom di database kamu --}}
+                            <img src="{{ asset('storage/' . $event->image) }}" 
+                                alt="{{ $event->name }}" 
+                                class="w-full h-full object-cover">
+                        @else
+                            {{-- Gambar Default jika tidak ada poster --}}
+                            <div class="flex items-center justify-center h-full bg-blue-100 text-blue-500">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        @endif
+                        
+                        {{-- Badge Kategori (Opsional: dipindah ke atas gambar) --}}
+                        @if($event->skkkCategoryName)
+                            <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+                                {{ $event->skkkCategoryName }}
+                            </div>
+                        @endif
+                    </div>
+                    {{-- AKHIR BAGIAN FOTO --}}
+
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-gray-800 leading-tight pr-2">{{ $event->name }}</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">
+                                {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
+                            </p>
+                            <p class="text-sm text-gray-600 mb-4">
+                                @if($event->registration_phase === 'volunteer_open')
+                                    <span class="text-blue-600 font-medium">Dicari: Panitia</span>
+                                @elseif($event->registration_phase === 'participant_open')
+                                    <span class="text-green-600 font-medium">Dicari: Peserta</span>
+                                @else
+                                    <span class="text-gray-500">Pendaftaran ditutup</span>
+                                @endif
+                            </p>
                         </div>
-                        <p class="text-sm text-gray-600 mb-2">
-                            {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
-                        </p>
-                        <p class="text-sm text-gray-600 mb-4">
-                            @if($event->registration_phase === 'volunteer_open')
-                                <span class="text-blue-600 font-medium">Dicari: Panitia</span>
-                            @elseif($event->registration_phase === 'participant_open')
-                                <span class="text-green-600 font-medium">Dicari: Peserta</span>
-                            @else
-                                <span class="text-gray-500">Pendaftaran ditutup</span>
-                            @endif
-                        </p>
                         <a href="{{ route('events.show', $event->id) }}"
-                            class="inline-block w-full text-center bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition duration-300">
+                            class="inline-block w-full text-center bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition duration-300 mt-2">
                             More Info
                         </a>
                     </div>
